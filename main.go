@@ -2,33 +2,36 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 
+	"github.com/elyarsadig/todo-app/database"
+	"github.com/elyarsadig/todo-app/logger"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	logger, _ := initLog()
-	_, err := initDB(logger, "todos.db")
+	db, err := initDB(logger, "todos.db")
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
-
+	db.Close()
 }
 
-func initDB(logger Logger, dbName string) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", dbName)
+func initDB(logger logger.Logger, dbName string) (*sql.DB, error) {
+	db, err := database.New(dbName)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open the database: %w", err)
+		logger.Fatal(err.Error())
 	}
-	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("failed to connect to the database: %w", err)
+	logger.Info("database connection established successfully!")
+	err = database.CreateTables(db)
+	if err != nil {
+		logger.Fatal(err.Error())
 	}
-	logger.Info("Database connection established successfully!")
+	logger.Info("tables created successfully!")
 	return db, nil
 }
 
-func initLog() (Logger, error) {
-	logger := NewLogger()
+func initLog() (logger.Logger, error) {
+	logger := logger.New()
 	return logger, nil
 }

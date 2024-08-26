@@ -1,4 +1,4 @@
-package main
+package logger
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ type Log struct {
 	logger *log.Logger
 }
 
-func NewLogger() Logger {
+func New() Logger {
 	l := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 	return &Log{logger: l}
 }
@@ -50,4 +50,5 @@ func (l *Log) Debug(msg string) {
 
 func (l *Log) Fatal(msg string) {
 	l.logger.Printf("%s %sFATAL: %s%s", getCallerInfo(), red, msg, reset)
+	os.Exit(1)
 }
