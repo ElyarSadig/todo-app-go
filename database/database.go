@@ -17,11 +17,11 @@ func New(dbName string) (*sql.DB, error) {
 }
 
 func CreateTables(db *sql.DB) error {
-	_, err := db.Exec(user)
+	_, err := db.Exec(userSQL)
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec(todo)
+	_, err = db.Exec(todoSQL)
 	if err != nil {
 		return err
 	}
