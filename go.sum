@@ -1,2 +1,6 @@
 github.com/mattn/go-sqlite3 v1.14.22 h1:2gZY6PC6kBnID23Tichd1K+Z0oS6nE/XwU+Vz/5o4kU=
 github.com/mattn/go-sqlite3 v1.14.22/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=
+github.com/nahojer/httprouter v1.0.4 h1:jFv6nhY+8jSfs3L+gQFWDhidfEcb7szcwD8Tm+vbvWg=
+github.com/nahojer/httprouter v1.0.4/go.mod h1:q7WULmACLSHqRbpR8CRcIMKYUeKvybW1JdZTDQu6Q8w=
+github.com/nahojer/routes v0.0.2 h1:sWkO3gYGV4vrFMRykB9QWvoLLwMJjNROLTS/UVCPK+o=
+github.com/nahojer/routes v0.0.2/go.mod h1:0B3jcNH1MKfMcWL1MNjxlOnB9Nyt2Z2x9LH5Bv+Ukx8=
