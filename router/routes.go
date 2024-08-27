@@ -1,6 +1,9 @@
 package router
 
 import (
+	"net/http"
+
+	"github.com/elyarsadig/todo-app/errors"
 	"github.com/nahojer/httprouter"
 )
 
@@ -21,6 +24,7 @@ const (
 func NewV1() Router {
 	router := httprouter.New()
 	v1 := router.Group("apis/v1")
+	v1.ErrorHandler = ErrorHandler
 	return Router{Router: v1}
 }
 
@@ -30,4 +34,15 @@ func (r *Router) AddHandler(method HttpMethod, path string, handler httprouter.H
 
 func (r *Router) AddMiddlewares(mw ...httprouter.Middleware) {
 	r.Use(mw...)
+}
+
+func ErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
+	errorHandler, ok := err.(errors.HandlerError)
+	if !ok || errorHandler.Status() == http.StatusInternalServerError {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.WriteHeader(errorHandler.Status())
+	w.Write([]byte(err.Error()))
 }

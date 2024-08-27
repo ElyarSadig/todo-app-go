@@ -23,14 +23,11 @@ func main() {
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
-	r := router.NewV1()
-	r.AddHandler(router.GET, "/test", func(w http.ResponseWriter, r *http.Request) error { return nil })
 	srv := &http.Server{
-		Addr:           ":8080",
-		Handler:        r,
-		ReadTimeout:    1 * time.Second,
-		WriteTimeout:   1 * time.Second,
-		MaxHeaderBytes: 1024,
+		Addr:         ":8080",
+		Handler:      routes(),
+		ReadTimeout:  1 * time.Second,
+		WriteTimeout: 1 * time.Second,
 	}
 	initServer(ctx, logger, srv, db)
 }
@@ -81,4 +78,9 @@ func initServer(ctx context.Context, logger logger.Logger, srv *http.Server, db 
 	if err := db.Close(); err != nil {
 		logger.Error(fmt.Sprintf("Database Close Error: %v", err))
 	}
+}
+
+func routes() router.Router {
+	r := router.NewV1()
+	return r
 }
