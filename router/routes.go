@@ -25,6 +25,7 @@ func NewV1() Router {
 	router := httprouter.New()
 	v1 := router.Group("apis/v1")
 	v1.ErrorHandler = ErrorHandler
+	v1.Use(CORS)
 	return Router{Router: v1}
 }
 
