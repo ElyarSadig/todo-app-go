@@ -1,5 +1,5 @@
 run:
-	go run .
+	go run ./cmd/api
 
 build:
-	go build .
+	go build ./cmd/api
