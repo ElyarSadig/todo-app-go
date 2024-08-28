@@ -32,23 +32,23 @@ func getCallerInfo() string {
 	return fmt.Sprintf("%s:%d", file, line)
 }
 
-func (l *Log) Info(msg string) {
-	l.logger.Printf("%s %sINFO: %s%s", getCallerInfo(), blue, reset, msg)
+func (l *Log) Info(v ...any) {
+	l.logger.Printf("%s %sINFO: %s%s", getCallerInfo(), blue, reset, fmt.Sprint(v...))
 }
 
-func (l *Log) Warn(msg string) {
-	l.logger.Printf("%s %sWARN: %s%s", getCallerInfo(), yellow, reset, msg)
+func (l *Log) Warn(v ...any) {
+	l.logger.Printf("%s %sWARN: %s%s", getCallerInfo(), yellow, reset, fmt.Sprint(v...))
 }
 
-func (l *Log) Error(msg string) {
-	l.logger.Printf("%s %sERROR: %s%s", getCallerInfo(), red, reset, msg)
+func (l *Log) Error(v ...any) {
+	l.logger.Printf("%s %sERROR: %s%s", getCallerInfo(), red, reset, fmt.Sprint(v...))
 }
 
-func (l *Log) Debug(msg string) {
-	l.logger.Printf("%s %sDEBUG: %s%s", getCallerInfo(), brightYellow, reset, msg)
+func (l *Log) Debug(v ...any) {
+	l.logger.Printf("%s %sDEBUG: %s%s", getCallerInfo(), brightYellow, reset, fmt.Sprint(v...))
 }
 
-func (l *Log) Fatal(msg string) {
-	l.logger.Printf("%s %sFATAL: %s%s", getCallerInfo(), red, reset, msg)
+func (l *Log) Fatal(v ...any) {
+	l.logger.Printf("%s %sFATAL: %s%s", getCallerInfo(), red, reset, fmt.Sprint(v...))
 	os.Exit(1)
 }

@@ -1,9 +1,9 @@
 package logger
 
 type Logger interface {
-	Info(msg string)
-	Warn(msg string)
-	Error(msg string)
-	Debug(msg string)
-	Fatal(msg string)
+	Info(v ...any)
+	Warn(v ...any)
+	Error(v ...any)
+	Debug(v ...any)
+	Fatal(v ...any)
 }

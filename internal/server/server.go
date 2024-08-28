@@ -59,6 +59,7 @@ func (s *Server) Run() error {
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
+	s.logger.Warn("Signal Recieved")
 
 	ctx, shutdown := context.WithTimeout(context.Background(), ctxTimeout)
 	defer shutdown()
