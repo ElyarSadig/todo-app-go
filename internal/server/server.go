@@ -47,7 +47,7 @@ func (s *Server) Run() error {
 	}
 
 	go func() {
-		s.logger.Info(fmt.Sprintf("Server is listening on PORT: %s", srv.Addr))
+		s.logger.Info(fmt.Sprintf("Server is listening on Address: %s", srv.Addr))
 		if err := srv.ListenAndServe(); err != nil {
 			s.logger.Fatal(err.Error())
 		}
@@ -63,8 +63,6 @@ func (s *Server) Run() error {
 
 	ctx, shutdown := context.WithTimeout(context.Background(), ctxTimeout)
 	defer shutdown()
-
-	s.logger.Info("Server Exited Properly")
 
 	return srv.Shutdown(ctx)
 }
