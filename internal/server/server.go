@@ -29,7 +29,7 @@ type Server struct {
 }
 
 func New(db *sql.DB, logger logger.Logger) *Server {
-	router := httprouter.New().Group("apis/v1")
+	router := httprouter.New()
 	router.ErrorHandler = errorHandler
 	return &Server{
 		db:     db,
