@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"runtime"
@@ -19,8 +20,8 @@ type Log struct {
 	logger *log.Logger
 }
 
-func New() Logger {
-	l := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+func New(out io.Writer) Logger {
+	l := log.New(out, "", log.Ldate|log.Ltime)
 	return &Log{logger: l}
 }
 

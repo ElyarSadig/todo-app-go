@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/elyarsadig/todo-app/internal/server"
 	"github.com/elyarsadig/todo-app/migrations"
 	"github.com/elyarsadig/todo-app/pkg/db/sqlite"
@@ -8,7 +10,7 @@ import (
 )
 
 func main() {
-	logger := logger.New()
+	logger := logger.New(os.Stdout)
 	db, err := sqlite.NewSqliteDB("todo.db")
 	if err != nil {
 		logger.Fatal(err)
