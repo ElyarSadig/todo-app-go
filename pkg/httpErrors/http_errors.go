@@ -8,8 +8,8 @@ type RestErr interface {
 }
 
 type RestError struct {
-	ErrStatus int
-	ErrError  string
+	ErrStatus int    `json:"status"`
+	ErrError  string `json:"error"`
 }
 
 func (e RestError) Error() string {
@@ -23,6 +23,6 @@ func (e RestError) Status() int {
 func NewRestError(status int, err string) RestErr {
 	return RestError{
 		ErrStatus: status,
-		ErrError: err,
+		ErrError:  err,
 	}
 }
