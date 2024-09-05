@@ -46,12 +46,12 @@ func (u *authUC) Login(ctx context.Context, user *models.User) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return "", nil
+	return token, nil
 }
 
 func (u *authUC) Register(ctx context.Context, user *models.User) (string, error) {
 	_, err := u.authRepo.GetUserByEmail(ctx, user.Email)
-	if err != nil {
+	if err == nil {
 		return "", httpErrors.NewRestError(http.StatusConflict, "email already in use")
 	}
 	hashedPassword, err := bcrypt.HashPassword(user.Password)

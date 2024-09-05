@@ -1,3 +1,4 @@
+//go:generate mockgen -source sqlite_repository.go -destination mock/sqlite_repository_mock.go -package mock
 package auth
 
 import (
