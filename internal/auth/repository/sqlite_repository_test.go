@@ -135,6 +135,8 @@ func TestDeleteUserToken(t *testing.T) {
 }
 
 func TestUpdateUserToken(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	require.NoError(t, err)
 	defer db.Close()
