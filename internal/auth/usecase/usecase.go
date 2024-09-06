@@ -35,12 +35,12 @@ func (u *authUC) Login(ctx context.Context, user *models.User) (string, error) {
 		}
 	}
 	if !bcrypt.CheckPasswordHash(user.Password, tempUser.Password) {
-		return "", httpErrors.NewRestError(http.StatusBadRequest, "invalid credential try again!")
+		return "", httpErrors.NewRestError(http.StatusBadRequest, "invalid credential try again", nil)
 	}
 	token, err := utils.GenerateSecureToken(u.tokenLength)
 	if err != nil {
 		u.logger.Error(err.Error())
-		return "", httpErrors.NewRestError(http.StatusInternalServerError, "something went wrong!")
+		return "", httpErrors.NewRestError(http.StatusInternalServerError, "something went wrong", err)
 	}
 	err = u.authRepo.UpdateUserToken(ctx, tempUser.Email, token)
 	if err != nil {
@@ -52,17 +52,17 @@ func (u *authUC) Login(ctx context.Context, user *models.User) (string, error) {
 func (u *authUC) Register(ctx context.Context, user *models.User) (string, error) {
 	_, err := u.authRepo.GetUserByEmail(ctx, user.Email)
 	if err == nil {
-		return "", httpErrors.NewRestError(http.StatusConflict, "email already in use")
+		return "", httpErrors.NewRestError(http.StatusConflict, "email already in use", nil)
 	}
 	hashedPassword, err := bcrypt.HashPassword(user.Password)
 	if err != nil {
 		u.logger.Error(err)
-		return "", httpErrors.NewRestError(http.StatusInternalServerError, "something went wrong")
+		return "", httpErrors.NewRestError(http.StatusInternalServerError, "something went wrong", err)
 	}
 	token, err := utils.GenerateSecureToken(u.tokenLength)
 	if err != nil {
 		u.logger.Error(err)
-		return "", httpErrors.NewRestError(http.StatusInternalServerError, "something went wrong")
+		return "", httpErrors.NewRestError(http.StatusInternalServerError, "something went wrong", err)
 	}
 	err = u.authRepo.Create(ctx, &models.User{
 		Name:     user.Name,

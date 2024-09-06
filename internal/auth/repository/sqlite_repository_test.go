@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql/driver"
 	"io"
+	"net/http"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -48,8 +49,12 @@ func TestGetUserByEmail(t *testing.T) {
 			WillReturnRows(rows)
 
 		user, err := authRepo.GetUserByEmail(context.Background(), email)
+		errValue, ok := err.(httpErrors.RestErr)
+		if !ok {
+			t.Fatal("type assertion to httpErrors.RestErr failed")
+		}
 		require.Error(t, err)
-		require.Equal(t, httpErrors.UserNotFoundError, err)
+		require.Equal(t, http.StatusNotFound, errValue.Status())
 		require.Equal(t, 0, user.ID)
 		require.Equal(t, "", user.Email)
 	})
@@ -58,11 +63,15 @@ func TestGetUserByEmail(t *testing.T) {
 		email := "error@preparingstmt.com"
 
 		mock.ExpectPrepare(getUserByEmailQuery).
-			WillReturnError(httpErrors.InternalServerError)
+			WillReturnError(httpErrors.NewInternalServerError(nil))
 
 		user, err := authRepo.GetUserByEmail(context.Background(), email)
+		errValue, ok := err.(httpErrors.RestErr)
+		if !ok {
+			t.Fatal("type assertion to httpErrors.RestErr failed")
+		}
 		require.Error(t, err)
-		require.Equal(t, httpErrors.InternalServerError, err)
+		require.Equal(t, http.StatusInternalServerError, errValue.Status())
 		require.Equal(t, 0, user.ID)
 		require.Equal(t, "", user.Email)
 	})
@@ -73,11 +82,15 @@ func TestGetUserByEmail(t *testing.T) {
 		mock.ExpectPrepare(getUserByEmailQuery).
 			ExpectQuery().
 			WithArgs(email).
-			WillReturnError(httpErrors.InternalServerError)
+			WillReturnError(httpErrors.NewInternalServerError(nil))
 
 		user, err := authRepo.GetUserByEmail(context.Background(), email)
+		errValue, ok := err.(httpErrors.RestErr)
+		if !ok {
+			t.Fatal("type assertion to httpErrors.RestErr failed")
+		}
 		require.Error(t, err)
-		require.Equal(t, httpErrors.InternalServerError, err)
+		require.Equal(t, http.StatusInternalServerError, errValue.Status())
 		require.Equal(t, 0, user.ID)
 		require.Equal(t, "", user.Email)
 	})

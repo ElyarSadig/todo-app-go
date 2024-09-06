@@ -57,7 +57,7 @@ func TestRegister(t *testing.T) {
 		Password: "test123",
 		Email:    "test@email.com",
 	}
-	mockAuthRepo.EXPECT().GetUserByEmail(ctx, "test@email.com").Return(models.User{}, httpErrors.UserNotFoundError)
+	mockAuthRepo.EXPECT().GetUserByEmail(ctx, "test@email.com").Return(models.User{}, httpErrors.NewNotFoundError(nil))
 	mockAuthRepo.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 	token, err := authUC.Register(ctx, &user)
 	require.NoError(t, err)
