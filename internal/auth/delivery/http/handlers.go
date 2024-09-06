@@ -5,6 +5,7 @@ import (
 
 	"github.com/elyarsadig/todo-app/internal/auth"
 	"github.com/elyarsadig/todo-app/pkg/logger"
+	"github.com/elyarsadig/todo-app/pkg/utils"
 	"github.com/nahojer/httprouter"
 )
 
@@ -34,6 +35,12 @@ func (h *authHandlers) Login() httprouter.Handler {
 
 func (h *authHandlers) Logout() httprouter.Handler {
 	return func(w http.ResponseWriter, r *http.Request) error {
+		ctx := r.Context()
+		token := ctx.Value(utils.TokenCtxKey{}).(string)
+		err := h.authUC.Logout(ctx, token)
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 }

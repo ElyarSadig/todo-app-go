@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/elyarsadig/todo-app/pkg/httpErrors"
 	"github.com/elyarsadig/todo-app/pkg/logger"
 	"github.com/nahojer/httprouter"
 )
@@ -30,7 +31,7 @@ type Server struct {
 
 func New(db *sql.DB, logger logger.Logger) *Server {
 	router := httprouter.New()
-	router.ErrorHandler = errorHandler
+	router.ErrorHandler = httpErrors.ErrorHandler
 	return &Server{
 		db:     db,
 		logger: logger,
@@ -41,6 +42,7 @@ func New(db *sql.DB, logger logger.Logger) *Server {
 func (s *Server) Run() error {
 	srv := &http.Server{
 		Addr:           address,
+		Handler:        s.router,
 		ReadTimeout:    readTimeout,
 		WriteTimeout:   writeTimeout,
 		MaxHeaderBytes: maxHeaderBytes,
@@ -53,7 +55,9 @@ func (s *Server) Run() error {
 		}
 	}()
 
-	//TODO map handlers here
+	if err := s.MapHandlers(s.router); err != nil {
+		return err
+	}
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
