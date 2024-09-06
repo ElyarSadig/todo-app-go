@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/elyarsadig/todo-app/internal/auth"
+	"github.com/elyarsadig/todo-app/pkg/httpErrors"
 	"github.com/elyarsadig/todo-app/pkg/logger"
 	"github.com/elyarsadig/todo-app/pkg/utils"
-	"github.com/nahojer/httprouter"
 )
 
 type authHandlers struct {
@@ -21,26 +21,21 @@ func NewAuthHandlers(authUC auth.UseCase, log logger.Logger) auth.Handler {
 	}
 }
 
-func (h *authHandlers) Register() httprouter.Handler {
-	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
-	}
+func (h *authHandlers) Register(w http.ResponseWriter, r *http.Request) {
+
 }
 
-func (h *authHandlers) Login() httprouter.Handler {
-	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
-	}
+func (h *authHandlers) Login(w http.ResponseWriter, r *http.Request) {
+
 }
 
-func (h *authHandlers) Logout() httprouter.Handler {
-	return func(w http.ResponseWriter, r *http.Request) error {
-		ctx := r.Context()
-		token := ctx.Value(utils.TokenCtxKey{}).(string)
-		err := h.authUC.Logout(ctx, token)
-		if err != nil {
-			return err
-		}
-		return nil
+func (h *authHandlers) Logout(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	token := ctx.Value(utils.TokenCtxKey{}).(string)
+	err := h.authUC.Logout(ctx, token)
+	if err != nil {
+		httpErrors.ReturnError(w, err)
+		return
 	}
+	httpErrors.ReturnSuccess(w, nil)
 }

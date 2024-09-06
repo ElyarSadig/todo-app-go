@@ -3,11 +3,11 @@ package http
 import (
 	"github.com/elyarsadig/todo-app/internal/auth"
 	"github.com/elyarsadig/todo-app/internal/middleware"
-	"github.com/nahojer/httprouter"
+	"github.com/go-chi/chi/v5"
 )
 
-func MapAuthRoutes(authGroup *httprouter.Router, h auth.Handler) {
-	authGroup.Handle("post", "/register", h.Register())
-	authGroup.Handle("post", "/login", h.Login())
-	authGroup.Handle("post", "/logout", h.Logout(), middleware.Protected)
+func MapAuthRoutes(router chi.Router, h auth.Handler) {
+	router.Post("/register", h.Register)
+	router.Post("/login", h.Login)
+	router.With(middleware.Protected).Post("/logout", h.Logout)
 }

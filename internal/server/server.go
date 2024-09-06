@@ -10,9 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/elyarsadig/todo-app/pkg/httpErrors"
 	"github.com/elyarsadig/todo-app/pkg/logger"
-	"github.com/nahojer/httprouter"
+	"github.com/go-chi/chi/v5"
 )
 
 const (
@@ -25,13 +24,12 @@ const (
 
 type Server struct {
 	logger logger.Logger
-	router *httprouter.Router
+	router chi.Router
 	db     *sql.DB
 }
 
 func New(db *sql.DB, logger logger.Logger) *Server {
-	router := httprouter.New()
-	router.ErrorHandler = httpErrors.ErrorHandler
+	router := chi.NewRouter()
 	return &Server{
 		db:     db,
 		logger: logger,

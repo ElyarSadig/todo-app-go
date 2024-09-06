@@ -3,27 +3,30 @@ package middleware
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/elyarsadig/todo-app/pkg/httpErrors"
 	"github.com/elyarsadig/todo-app/pkg/utils"
-	"github.com/nahojer/httprouter"
 )
 
-func Protected(next httprouter.Handler) httprouter.Handler {
-	return func(w http.ResponseWriter, r *http.Request) error {
+func Protected(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		bearerToken := r.Header.Get("Authorization")
 		if len(bearerToken) == 0 {
-			httpErrors.ErrorHandler(w, r, httpErrors.NewRestError(http.StatusUnauthorized, "unauthorized", nil))
-			return nil
+			httpErrors.ReturnError(w, httpErrors.NewRestError(http.StatusUnauthorized, "unauthorized", nil))
+			return
+		}
+		if !strings.Contains(bearerToken, "Bearer ") {
+			httpErrors.ReturnError(w, httpErrors.NewRestError(http.StatusUnauthorized, "unauthorized", nil))
+			return
 		}
 		token := bearerToken[len("Bearer "):]
 		if len(token) == 0 {
-			httpErrors.ErrorHandler(w, r, httpErrors.NewRestError(http.StatusUnauthorized, "unauthorized", nil))
-			return nil
+			httpErrors.ReturnError(w, httpErrors.NewRestError(http.StatusUnauthorized, "unauthorized", nil))
+			return
 		}
 		ctx := context.WithValue(r.Context(), utils.TokenCtxKey{}, token)
 		r = r.WithContext(ctx)
-		next(w, r)
-		return nil
-	}
+		next.ServeHTTP(w, r)
+	})
 }

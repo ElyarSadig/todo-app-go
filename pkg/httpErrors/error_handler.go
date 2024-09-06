@@ -5,16 +5,20 @@ import (
 	"net/http"
 )
 
-type Error struct {
+type ErrorResponse struct {
 	Err    string `json:"error"`
 	Status int    `json:"status"`
 }
 
-func ErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
-	if err != nil {
-		errorValue, ok := err.(RestErr)
+type SuccessResponse struct {
+	Message string `json:"message"`
+	Status  int    `json:"status"`
+}
+
+func ReturnError(w http.ResponseWriter, err error) {
+	errorValue, ok := err.(RestErr)
 	if !ok {
-		errResponse := Error{
+		errResponse := ErrorResponse{
 			Err:    "internal server error",
 			Status: http.StatusInternalServerError,
 		}
@@ -22,10 +26,20 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
 		return
 	}
 	w.WriteHeader(errorValue.Status())
-	_ = json.NewEncoder(w).Encode(Error{
+	_ = json.NewEncoder(w).Encode(ErrorResponse{
 		Err:    errorValue.ErrorValue(),
 		Status: errorValue.Status(),
 	})
+}
+
+func ReturnSuccess(w http.ResponseWriter, message any) {
+	w.WriteHeader(http.StatusOK)
+	if message != nil {
+		json.NewEncoder(w).Encode(message)
+		return
 	}
-	
+	json.NewEncoder(w).Encode(SuccessResponse{
+		Message: "success",
+		Status:  http.StatusOK,
+	})
 }

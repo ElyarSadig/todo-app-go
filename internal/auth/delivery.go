@@ -1,9 +1,9 @@
 package auth
 
-import "github.com/nahojer/httprouter"
+import "net/http"
 
 type Handler interface {
-	Register() httprouter.Handler
-	Login() httprouter.Handler
-	Logout() httprouter.Handler
+	Register(w http.ResponseWriter, r *http.Request)
+	Login(w http.ResponseWriter, r *http.Request)
+	Logout(w http.ResponseWriter, r *http.Request)
 }

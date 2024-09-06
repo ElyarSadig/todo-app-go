@@ -5,10 +5,10 @@ import (
 	authRepository "github.com/elyarsadig/todo-app/internal/auth/repository"
 	authUseCase "github.com/elyarsadig/todo-app/internal/auth/usecase"
 	"github.com/elyarsadig/todo-app/internal/middleware"
-	"github.com/nahojer/httprouter"
+	"github.com/go-chi/chi/v5"
 )
 
-func (s *Server) MapHandlers(router *httprouter.Router) error {
+func (s *Server) MapHandlers(router chi.Router) error {
 	// init repository
 	authRepo := authRepository.New(s.db, s.logger)
 	// init usecase
@@ -18,9 +18,8 @@ func (s *Server) MapHandlers(router *httprouter.Router) error {
 	// setup middlewares
 	router.Use(middleware.CORS)
 
-	v1 := router.Group("/apis/v1")
-	authGroup := v1.Group("/auth")
-	authHttp.MapAuthRoutes(authGroup, authHandlers)
+	authHttp.MapAuthRoutes(router, authHandlers)
 
+	router.Mount("/apis/v1", router)
 	return nil
 }
