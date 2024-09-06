@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"net/http"
+	"strings"
 
 	"github.com/elyarsadig/todo-app/internal/auth"
 	"github.com/elyarsadig/todo-app/internal/models"
@@ -51,6 +53,9 @@ func (r *authRepo) Create(ctx context.Context, obj *models.User) error {
 	defer stmt.Close()
 	_, err = stmt.ExecContext(ctx, obj.Name, obj.Email, obj.Token, obj.Password)
 	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint") {
+			return httpErrors.NewRestError(http.StatusConflict, "email already in use", err)
+		}
 		r.logger.Error(err)
 		return httpErrors.NewInternalServerError(err)
 	}

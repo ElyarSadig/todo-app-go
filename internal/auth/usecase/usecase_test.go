@@ -8,7 +8,6 @@ import (
 	"github.com/elyarsadig/todo-app/internal/auth/mock"
 	"github.com/elyarsadig/todo-app/internal/models"
 	"github.com/elyarsadig/todo-app/pkg/bcrypt"
-	"github.com/elyarsadig/todo-app/pkg/httpErrors"
 	"github.com/elyarsadig/todo-app/pkg/logger"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -57,7 +56,6 @@ func TestRegister(t *testing.T) {
 		Password: "test123",
 		Email:    "test@email.com",
 	}
-	mockAuthRepo.EXPECT().GetUserByEmail(ctx, "test@email.com").Return(models.User{}, httpErrors.NewNotFoundError(nil))
 	mockAuthRepo.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 	token, err := authUC.Register(ctx, &user)
 	require.NoError(t, err)

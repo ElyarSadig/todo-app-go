@@ -34,7 +34,7 @@ func TestGetUserByEmail(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 1, user.ID)
 		require.Equal(t, email, user.Email)
-		require.Equal(t, "token", user.Token)
+		require.Equal(t, "token", *user.Token)
 		require.Equal(t, "password-hash", user.Password)
 	})
 
@@ -107,10 +107,11 @@ func TestCreate(t *testing.T) {
 	authRepo := New(db, logger)
 
 	t.Run("Create Success", func(t *testing.T) {
+		dummyToken := "dummy"
 		obj := models.User{
 			Name:     "dummy name",
 			Email:    "dummy@email.com",
-			Token:    "dummy",
+			Token:    &dummyToken,
 			Password: "password",
 		}
 

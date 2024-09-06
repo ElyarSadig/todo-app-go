@@ -12,30 +12,30 @@ type RestErr interface {
 	ErrorValue() string
 }
 
-type RestError struct {
+type restError struct {
 	ErrStatus int    `json:"status"`
 	ErrError  string `json:"error"`
 	ErrCauses any    `json:"-"`
 }
 
-func (e RestError) Error() string {
+func (e restError) Error() string {
 	return fmt.Sprintf("status: %d - error: %s causes: %v", e.ErrStatus, e.ErrError, e.ErrCauses)
 }
 
-func (e RestError) ErrorValue() string {
+func (e restError) ErrorValue() string {
 	return e.ErrError
 }
 
-func (e RestError) Status() int {
+func (e restError) Status() int {
 	return e.ErrStatus
 }
 
-func (e RestError) Causes() any {
+func (e restError) Causes() any {
 	return e.ErrCauses
 }
 
 func NewRestError(status int, err string, causes any) RestErr {
-	return RestError{
+	return restError{
 		ErrStatus: status,
 		ErrError:  err,
 		ErrCauses: causes,
@@ -43,7 +43,7 @@ func NewRestError(status int, err string, causes any) RestErr {
 }
 
 func NewInternalServerError(causes any) RestErr {
-	return RestError{
+	return restError{
 		ErrStatus: http.StatusInternalServerError,
 		ErrError:  "internal server error",
 		ErrCauses: causes,
@@ -51,7 +51,7 @@ func NewInternalServerError(causes any) RestErr {
 }
 
 func NewNotFoundError(causes any) RestErr {
-	return RestError{
+	return restError{
 		ErrStatus: http.StatusNotFound,
 		ErrError:  "not found",
 		ErrCauses: causes,

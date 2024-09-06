@@ -6,17 +6,17 @@ const (
 	userTable = `
 	CREATE TABLE IF NOT EXISTS users (
     	id INTEGER PRIMARY KEY AUTOINCREMENT,
-    	name VARCHAR(255) NOT NULL,
-    	email VARCHAR(255) UNIQUE NOT NULL,
+    	name VARCHAR(255) NOT NULL CHECK (name <> ''),
+    	email VARCHAR(255) UNIQUE NOT NULL CHECK (email <> ''),
     	token VARCHAR(255),
-    	password VARCHAR(255) NOT NULL
+    	password VARCHAR(255) NOT NULL CHECK (password <> '')
 	);
 `
 	todoTable = `
 	CREATE TABLE IF NOT EXISTS todos (
     	id INTEGER PRIMARY KEY AUTOINCREMENT,
     	user_id INT,
-    	title VARCHAR(255) NOT NULL,
+    	title VARCHAR(255) NOT NULL CHECK (title <> ''),
     	completed BOOLEAN DEFAULT FALSE,
     	created_at TIMESTAMP,
     	updated_at TIMESTAMP,
